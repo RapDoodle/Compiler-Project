@@ -54,7 +54,7 @@ static const char trans_table[39][76] = {
 
 static const int num_accepted_states = 18;
 static const int accepted_states[18] = { 2, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 34, 36, 37 };
-static const char* lexemes[] = { "!", "identifier", "text_literal", "(", ")", "*", ",", "-", "==", "_", "pi", "or", "int", "max", "sig", "str", "int_literal", "agg" };
+static const char* lexemes[] = { "!", "identifier", "text_literial", "(", ")", "*", ",", "-", "==", "_", "pi", "or", "int", "max", "sig", "str", "int_literial", "agg" };
 static const int num_show_tk_name = 3;
 static const int show_tk_name[3] = { 1, 2, 16 };
 
