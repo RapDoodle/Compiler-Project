@@ -11,6 +11,8 @@
 #include "lexer.h"
 #include "buffer.h"
 #include "utils.h"
+#include "stack.h"
+#include "parser.h"
 
 
 char* lexer(char* str)
@@ -30,24 +32,13 @@ char* lexer(char* str)
     while (ptr != NULL && *ptr != '\0' && *ptr != '\n') {
         prev_ptr = ptr;
         ptr = next_token(ptr, &token_idx);
+        printf("%d ", dfa2tkid(accepted_states[token_idx]));
+
         if (token_idx < 0) {
             // Override all data in the buffer with the error message
             sprintf(buffer, "Lexecal error.");
         } else {
             write_buffer_string(&buffer, lexemes[token_idx], &buffer_size, &buffer_offset);
-            for (int i = 0; i < num_show_tk_name; i++) {
-                if (token_idx == show_tk_name[i]) {
-                    write_buffer_char(&buffer, '<', &buffer_size, &buffer_offset);
-
-                    // Read the token name in between
-                    char* lower_ptr = prev_ptr + 1;
-                    while (lower_ptr < ptr - 1) {
-                        write_buffer_char(&buffer, *lower_ptr, &buffer_size, &buffer_offset);
-                        lower_ptr++;
-                    }
-                    write_buffer_char(&buffer, '>', &buffer_size, &buffer_offset);
-                }
-            }
             write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
         }
     }
@@ -57,8 +48,11 @@ char* lexer(char* str)
 
 int main()
 {
-    printf("Relational Algebra Analyzer (Version: 1.0)\nBuilt by Group 1\n\n");
+    printf("Relational Algebra Analyzer (Version: 1.1)\nBuilt by Group 1\n\n");
 
+    Stack stack;
+    create_stack(&stack, 64);
+    
     // Read from the file
     int buffer_size = 64;
     char* buffer = create_buffer(buffer_size);

@@ -143,11 +143,15 @@
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="analyzer.cpp" />
+    <ClCompile Include="parser.cpp" />
+    <ClCompile Include="stack.cpp" />
     <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
     <ClInclude Include="lexer.h" />
+    <ClInclude Include="parser.h" />
+    <ClInclude Include="stack.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
