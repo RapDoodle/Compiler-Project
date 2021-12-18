@@ -17,3 +17,40 @@ int dfa2tkid(int dfa_state)
 		return dfa2tkid_tbl[dfa_state];
 	}
 }
+
+char* show_parser_stack(Stack* stack)
+{
+	// Initialize a string buffer
+	char* buffer = create_buffer(64);
+	int buffer_size = 64, buffer_offset = 0;
+
+	int val = -1;
+	for (int i = 0; i <= stack->top; i++) {
+		val = stack->values[i];
+		printf("%d ", val);
+	}
+	if (!is_stack_empty(stack)) {
+		// Print from the top to bottom
+		for (int i = 0; i <= stack->top; i++) {
+			val = stack->values[i];
+			if (i % 2 == 0) {
+				char num_str[16];
+				sprintf(num_str, "%d ", val);
+				write_buffer_string(&buffer, num_str, &buffer_size, &buffer_offset);
+			} else {
+				if (val >= 0) {
+					// Ids
+					write_buffer_string(&buffer, parser_tks[val], &buffer_size, &buffer_offset);
+					
+				} else {
+					// Tokens
+					write_buffer_string(&buffer, rules_lhs_sym[-1 * val], &buffer_size, &buffer_offset);
+					
+
+				}
+			}
+		}
+	}
+
+	return buffer;
+}

@@ -13,6 +13,7 @@
 #include "utils.h"
 #include "stack.h"
 #include "parser.h"
+#include "stack.h"
 
 
 char* lexer(char* str)
@@ -20,28 +21,109 @@ char* lexer(char* str)
     if (strlen(str) == 0)
         return NULL;
 
-    // prev_ptr is used to keep track of the beginning of a token
-    char* prev_ptr = NULL;
-    char* ptr = str;
+    char* inp_ptr = str, *prev_inp_ptr = NULL;
     int token_idx = -1;
 
     // Variables for the buffer
     char* buffer = create_buffer(64);
-    int buffer_size = 64;
-    int buffer_offset = 0;
-    while (ptr != NULL && *ptr != '\0' && *ptr != '\n') {
-        prev_ptr = ptr;
-        ptr = next_token(ptr, &token_idx);
-        printf("%d ", dfa2tkid(accepted_states[token_idx]));
+    int buffer_size = 64, buffer_offset = 0;
 
-        if (token_idx < 0) {
-            // Override all data in the buffer with the error message
-            sprintf(buffer, "Lexecal error.");
+    int state = 0, actn_shft = -1, actn_rdc = -1, pop_len = 0, rule_id = -1, par_tkid = -1;
+
+    Stack stack;
+    create_stack(&stack, 64);
+    stack_push(&stack, 0);
+
+    // End of string
+    bool eos = false;
+
+    while (!eos) {
+        prev_inp_ptr = inp_ptr;
+        if (inp_ptr != NULL && *inp_ptr != '\0' && *inp_ptr != '\n') {
+            inp_ptr = next_token(inp_ptr, &token_idx);
+            if (token_idx < 0) {
+                // Override all data in the buffer with the error message
+                sprintf(buffer, "Lexecal error.");
+                break;
+            }
+
+            // Convert to parser token id
+            par_tkid = dfa2tkid(accepted_states[token_idx]);
         } else {
-            write_buffer_string(&buffer, lexemes[token_idx], &buffer_size, &buffer_offset);
-            write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
+            // Get the token id for $
+            par_tkid = dfa2tkid(-1);
+            eos = true;
         }
+
+        // Check for accept
+        // Check for whether to accept the string
+        if (actn_acc_tbl[state][par_tkid]) {
+            printf("Accept\n");
+            break;
+        }
+
+        // Check for shift
+        actn_shft = actn_shft_tbl[state][par_tkid];
+        if (actn_shft >= 0) {
+            // Proceed to shift
+            state = actn_shft;
+
+            printf("Shift %d\n", actn_shft);
+
+            // Push the current character
+            stack_push(&stack, par_tkid);
+            stack_push(&stack, state);
+
+            eos = false;
+            
+        } else {
+            // Check for reduce
+            actn_rdc = actn_rdc_tbl[state][par_tkid];
+            if (actn_rdc >= 0) {
+                printf("Reduce %d\n", actn_rdc);
+
+                // Rewind
+                inp_ptr = prev_inp_ptr;
+                // Proceed to reduce
+                // Pop the rhs
+                pop_len = rules_tk_count[actn_rdc] * 2;
+                int stack_val = 0;
+                for (int i = 0; i < pop_len; i++)
+                    stack_pop(&stack, &stack_val);
+
+                peek_stack(&stack, &stack_val);
+                state = stack_val;
+
+                // Push the lhs to the stack
+                stack_push(&stack, -1 * actn_rdc);
+
+                // Push the goto number to the stack
+                int rule_id = rules_lhs_idx[actn_rdc];
+                state = goto_tbl[state][rule_id];
+                stack_push(&stack, state);
+
+                eos = false;
+            } else {
+                printf("Syntax error\n");
+                break;
+            }
+
+        }
+
+        char* output_str = show_parser_stack(&stack);
+        printf("Stack: |%s|%s|\n", output_str, inp_ptr);
+        // write_buffer_string(&buffer, lexemes[token_idx], &buffer_size, &buffer_offset);
+        // write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
+
+        
+        // printf("%d ", );
     }
+
+    // Check for whether to accept the string
+    if (actn_acc_tbl[state][dfa2tkid(-1)])
+        printf("Accept!\n");
+    else
+        printf("Rejected\n");
     return buffer;
 }
 
