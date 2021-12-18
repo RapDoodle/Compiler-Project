@@ -16,7 +16,7 @@
 #include "stack.h"
 
 
-char* lexer(char* str)
+char* analyze(char* str)
 {
     if (strlen(str) == 0)
         return NULL;
@@ -25,8 +25,13 @@ char* lexer(char* str)
     int token_idx = -1;
 
     // Variables for the buffer
-    char* buffer = create_buffer(64);
     int buffer_size = 64, buffer_offset = 0;
+    char* buffer = create_buffer(buffer_size);
+
+    write_buffer_string(&buffer, "initial\n", &buffer_size, &buffer_offset);
+    write_buffer_string(&buffer, "\t<0 ", &buffer_size, &buffer_offset);
+    write_buffer_string(&buffer, str, &buffer_size, &buffer_offset);
+    write_buffer_string(&buffer, " $>\n", &buffer_size, &buffer_offset);
 
     int state = 0, actn_shft = -1, actn_rdc = -1, pop_len = 0, rule_id = -1, par_tkid = -1;
 
@@ -37,13 +42,13 @@ char* lexer(char* str)
     // End of string
     bool eos = false;
 
-    while (!eos) {
+    do {
         prev_inp_ptr = inp_ptr;
         if (inp_ptr != NULL && *inp_ptr != '\0' && *inp_ptr != '\n') {
             inp_ptr = next_token(inp_ptr, &token_idx);
             if (token_idx < 0) {
                 // Override all data in the buffer with the error message
-                sprintf(buffer, "Lexecal error.");
+                write_buffer_string(&buffer, "lexical error\n", &buffer_size, &buffer_offset);
                 break;
             }
 
@@ -58,7 +63,8 @@ char* lexer(char* str)
         // Check for accept
         // Check for whether to accept the string
         if (actn_acc_tbl[state][par_tkid]) {
-            printf("Accept\n");
+
+            write_buffer_string(&buffer, "accept\n", &buffer_size, &buffer_offset);
             break;
         }
 
@@ -68,7 +74,7 @@ char* lexer(char* str)
             // Proceed to shift
             state = actn_shft;
 
-            printf("Shift %d\n", actn_shft);
+            write_buffer_string(&buffer, "shift\n", &buffer_size, &buffer_offset);
 
             // Push the current character
             stack_push(&stack, par_tkid);
@@ -80,8 +86,6 @@ char* lexer(char* str)
             // Check for reduce
             actn_rdc = actn_rdc_tbl[state][par_tkid];
             if (actn_rdc >= 0) {
-                printf("Reduce %d\n", actn_rdc);
-
                 // Rewind
                 inp_ptr = prev_inp_ptr;
                 // Proceed to reduce
@@ -94,8 +98,8 @@ char* lexer(char* str)
                 peek_stack(&stack, &stack_val);
                 state = stack_val;
 
-                // Push the lhs to the stack
-                stack_push(&stack, -1 * actn_rdc);
+                // Push id of the lhs to the stack
+                stack_push(&stack, actn_rdc + stack_rule_offset);
 
                 // Push the goto number to the stack
                 int rule_id = rules_lhs_idx[actn_rdc];
@@ -103,27 +107,24 @@ char* lexer(char* str)
                 stack_push(&stack, state);
 
                 eos = false;
+
+                write_buffer_string(&buffer, "reduce ", &buffer_size, &buffer_offset);
+                write_buffer_string(&buffer, rules[actn_rdc], &buffer_size, &buffer_offset);
+                write_buffer_char(&buffer, '\n', &buffer_size, &buffer_offset);
             } else {
-                printf("Syntax error\n");
+                write_buffer_string(&buffer, "syntax error\n", &buffer_size, &buffer_offset);
                 break;
             }
 
         }
 
         char* output_str = show_parser_stack(&stack);
-        printf("Stack: |%s|%s|\n", output_str, inp_ptr);
-        // write_buffer_string(&buffer, lexemes[token_idx], &buffer_size, &buffer_offset);
-        // write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
+        write_buffer_string(&buffer, "\t<", &buffer_size, &buffer_offset);
+        write_buffer_string(&buffer, output_str, &buffer_size, &buffer_offset);
+        write_buffer_string(&buffer, inp_ptr, &buffer_size, &buffer_offset);
+        write_buffer_string(&buffer, "$>\n", &buffer_size, &buffer_offset);
+    } while (!eos || stack.top > 1);
 
-        
-        // printf("%d ", );
-    }
-
-    // Check for whether to accept the string
-    if (actn_acc_tbl[state][dfa2tkid(-1)])
-        printf("Accept!\n");
-    else
-        printf("Rejected\n");
     return buffer;
 }
 
@@ -156,12 +157,15 @@ int main()
         while (true) {
             ch = fgetc(fin_ptr);
             if (ch == '\n' || ch == EOF) {
-                char* out = lexer(buffer);
+                char* out = analyze(buffer);
                 printf("\n%s\n", out);
 
                 // Write the out.txt if available
-                if (fout_ptr != NULL)
-                    fprintf(fout_ptr, "%s\n", out);
+                if (fout_ptr != NULL) {
+                    fprintf(fout_ptr, "---------------\n");
+                    fprintf(fout_ptr, "%s", out);
+                }
+                    
 
                 // Print the '>>>' symbol if not the end of file
                 if ((pk_ch = fpeek(fin_ptr)) != EOF)
@@ -205,7 +209,7 @@ int main()
         }
 
         // Send to the lexer for lexical analysis
-        char* out_str = lexer(buffer);
+        char* out_str = analyze(buffer);
         if (out_str != NULL) {
             printf("%s\n", out_str);
             free(out_str);

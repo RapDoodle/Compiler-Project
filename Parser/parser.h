@@ -5,6 +5,9 @@
 #include "stack.h"
 #include "buffer.h"
 
+/* === The below code is converted from Excel === */
+/* To modify the following code, please use Convert.ipynb */
+
 static const int num_rules = 13;
 static const char* rules[] = { "E'->E", "E->sig_PT", "E->E*T", "E->T", "T->id", "T->(E)", "P->PorQ", "P->Q", "Q->R", "Q->(P)", "R->N==N", "N->id", "N->text" };
 static const int num_slr_states = 25;
@@ -120,6 +123,10 @@ const static int rules_tk_count[] = { 1, 4, 3, 1, 1, 3, 3, 1, 1, 3, 3, 1, 1 };
 const static int rules_lhs_idx[] = { 0, 1, 1, 1, 2, 2, 3, 3, 4, 4, 5, 6, 6 };
 const static char* rules_lhs_sym[] = { "E'", "E", "E", "E", "T", "T", "P", "P", "Q", "Q", "R", "N", "N"};
 const static char* parser_tks[] = { "sig", "_", "*", "id", "(", ")", "or", "==", "text" };
+
+/* === The above code is converted from Excel === */
+
+static const int stack_rule_offset = num_slr_states + 1;
 
 int dfa2tkid(int dfa_state);
 char* show_parser_stack(Stack* stack);

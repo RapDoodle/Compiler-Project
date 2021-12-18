@@ -25,10 +25,6 @@ char* show_parser_stack(Stack* stack)
 	int buffer_size = 64, buffer_offset = 0;
 
 	int val = -1;
-	for (int i = 0; i <= stack->top; i++) {
-		val = stack->values[i];
-		printf("%d ", val);
-	}
 	if (!is_stack_empty(stack)) {
 		// Print from the top to bottom
 		for (int i = 0; i <= stack->top; i++) {
@@ -38,15 +34,14 @@ char* show_parser_stack(Stack* stack)
 				sprintf(num_str, "%d ", val);
 				write_buffer_string(&buffer, num_str, &buffer_size, &buffer_offset);
 			} else {
-				if (val >= 0) {
+				if (val < stack_rule_offset) {
 					// Ids
 					write_buffer_string(&buffer, parser_tks[val], &buffer_size, &buffer_offset);
 					
 				} else {
 					// Tokens
-					write_buffer_string(&buffer, rules_lhs_sym[-1 * val], &buffer_size, &buffer_offset);
+					write_buffer_string(&buffer, rules_lhs_sym[val - stack_rule_offset], &buffer_size, &buffer_offset);
 					
-
 				}
 			}
 		}
