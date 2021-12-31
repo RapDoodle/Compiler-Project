@@ -2,8 +2,8 @@
 
 int get_char_index(char c)
 {
-    for (int i = 0; i < num_inputs; i++)
-        if (c == inputs[i])
+    for (int i = 0; i < alphabet_len; i++)
+        if (c == alphabet[i])
             return i;
     return -1;
 }

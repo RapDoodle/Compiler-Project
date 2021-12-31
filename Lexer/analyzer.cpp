@@ -29,10 +29,11 @@ char* lexer(char* str)
     int buffer_offset = 0;
     while (ptr != NULL && *ptr != '\0' && *ptr != '\n') {
         prev_ptr = ptr;
-        ptr = next_token(ptr, &token_idx);
+        token_idx = next_token(&ptr, &token_idx);
         if (token_idx < 0) {
             // Override all data in the buffer with the error message
-            sprintf(buffer, "Lexecal error.");
+            sprintf(buffer, "Lexical error.");
+            break;
         } else {
             write_buffer_string(&buffer, lexemes[token_idx], &buffer_size, &buffer_offset);
             for (int i = 0; i < num_show_tk_name; i++) {
