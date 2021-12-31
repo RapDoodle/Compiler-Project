@@ -40,7 +40,7 @@ char* analyze(char* str)
     stack_push(&stack, 0);
 
     // End of string
-    bool eos = false;
+    bool eos_signal = false, eos = false;
 
     do {
         prev_inp_ptr = inp_ptr;
@@ -57,6 +57,7 @@ char* analyze(char* str)
         } else {
             // Get the token id for $
             par_tkid = dfa2tkid(-1);
+            eos_signal = true;
             eos = true;
         }
 
@@ -80,7 +81,7 @@ char* analyze(char* str)
             stack_push(&stack, par_tkid);
             stack_push(&stack, state);
 
-            eos = false;
+            eos_signal = false;
             
         } else {
             // Check for reduce
@@ -106,7 +107,7 @@ char* analyze(char* str)
                 state = goto_tbl[state][rule_id];
                 stack_push(&stack, state);
 
-                eos = false;
+                eos_signal = false;
 
                 write_buffer_string(&buffer, "reduce ", &buffer_size, &buffer_offset);
                 write_buffer_string(&buffer, rules[actn_rdc], &buffer_size, &buffer_offset);
@@ -121,9 +122,12 @@ char* analyze(char* str)
         char* output_str = show_parser_stack(&stack);
         write_buffer_string(&buffer, "\t<", &buffer_size, &buffer_offset);
         write_buffer_string(&buffer, output_str, &buffer_size, &buffer_offset);
-        write_buffer_string(&buffer, inp_ptr, &buffer_size, &buffer_offset);
+        if (!eos) {
+            write_buffer_string(&buffer, inp_ptr, &buffer_size, &buffer_offset);
+            write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
+        }
         write_buffer_string(&buffer, "$>\n", &buffer_size, &buffer_offset);
-    } while (!eos || stack.top > 1);
+    } while (!eos_signal || stack.top > 1);
 
     return buffer;
 }
