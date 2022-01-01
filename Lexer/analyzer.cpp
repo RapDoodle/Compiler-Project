@@ -29,7 +29,7 @@ char* lexer(char* str)
     int buffer_offset = 0;
     while (ptr != NULL && *ptr != '\0' && *ptr != '\n') {
         prev_ptr = ptr;
-        token_idx = next_token(&ptr, &token_idx);
+        token_idx = next_token(&ptr);
         if (token_idx < 0) {
             // Override all data in the buffer with the error message
             sprintf(buffer, "Lexical error.");
