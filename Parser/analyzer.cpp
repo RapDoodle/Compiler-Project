@@ -45,7 +45,7 @@ char* analyze(char* str)
     do {
         prev_inp_ptr = inp_ptr;
         if (inp_ptr != NULL && *inp_ptr != '\0' && *inp_ptr != '\n') {
-            inp_ptr = next_token(inp_ptr, &token_idx);
+            token_idx = next_token(&inp_ptr, &token_idx);
             if (token_idx < 0) {
                 // Override all data in the buffer with the error message
                 write_buffer_string(&buffer, "lexical error\n", &buffer_size, &buffer_offset);
@@ -119,10 +119,10 @@ char* analyze(char* str)
 
         }
 
-        char* output_str = show_parser_stack(&stack);
+        char* output_str = get_parser_stack(&stack);
         write_buffer_string(&buffer, "\t<", &buffer_size, &buffer_offset);
         write_buffer_string(&buffer, output_str, &buffer_size, &buffer_offset);
-        if (!eos) {
+        if (eos_signal) {
             write_buffer_string(&buffer, inp_ptr, &buffer_size, &buffer_offset);
             write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
         }
