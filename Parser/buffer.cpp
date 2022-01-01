@@ -25,10 +25,9 @@ bool write_buffer_string(char** buffer, const char* str, int* buffer_size, int* 
 	int str_length = strlen(str);
 
 	// Increase the buffer size on demand
-	if (*buffer_size < str_length + *offset) {
+	if (*buffer_size < str_length + *offset)
 		if (!increase_buffer(buffer, buffer_size))
 			return false;
-	}
 	sprintf(*buffer + *offset, "%s", str);
 	*offset += str_length;
 	return true;
