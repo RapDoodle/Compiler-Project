@@ -45,11 +45,11 @@ static const int trans_table[38][76] = {
 	{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 36, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1} };
 
 
-static const int num_accepted_states = 18;
-static const int accepted_states[num_accepted_states] = { 2, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 35, 36 };
+static const int num_accepted_states = 9;
+static const int accepted_states[num_accepted_states] = { 18, 19, 20, 21, 22, 25, 26, 28, 31 };
 
-static const char* lexemes[] = { "!", "id", "text", "(", ")", "*", ",", "-", "==", "_", "pi", "or", "int", "max", "sig", "str", "int_literal", "agg" };
+static const char* lexemes[] = { "id", "text", "(", ")", "*", "==", "_", "or", "sig" };
 
-static const int show_sym_name_len = 3;
-static const int show_sym_name[3] = { 1, 2, 16 };
+static const int show_sym_name_len = 2;
+static const int show_sym_name[2] = { 0, 1 };
 
