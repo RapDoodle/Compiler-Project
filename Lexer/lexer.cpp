@@ -20,9 +20,12 @@ int next_token(char **ptr, int *token_idx)
         col = get_char_index(current_char);
         if (col < 0)
             return -1;
-
+ 
         // Jump according to the transition table
         current_state = trans_table[current_state][col];
+
+        if (current_state < 0)
+            return -1;
 
         // Check for whether it is in final states
         for (int i = 0; i < num_accepted_states; i++) {
