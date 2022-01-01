@@ -2,7 +2,7 @@
 
 int dfa2tkid(int dfa_state)
 {
-	// Return the max + 1 index
+	// Return the max + 1 index when the requested the token for $
 	if (dfa_state < 0) {
 		int max_val = -1;
 		for (int i = 0; i < dfa2tkid_tbl_len; i++) {
@@ -13,9 +13,13 @@ int dfa2tkid(int dfa_state)
 		return max_val + 1;
 	}
 	
+	// If the requested token is in the valid range
 	if (dfa_state >= 0 && dfa_state < dfa2tkid_tbl_len) {
 		return dfa2tkid_tbl[dfa_state];
 	}
+
+	// Return -1 indicating invalid token index
+	return -1;
 }
 
 char* get_parser_stack(Stack* stack)
@@ -30,18 +34,21 @@ char* get_parser_stack(Stack* stack)
 		for (int i = 0; i <= stack->top; i++) {
 			val = stack->values[i];
 			if (i % 2 == 0) {
-				char num_str[16];
-				sprintf(num_str, "%d ", val);
+				// The even positions contain the state number
+				// In such cases, simply show it as an integer.
+				char num_str[32];
+				sprintf(num_str, "%d", val);
 				write_buffer_string(&buffer, num_str, &buffer_size, &buffer_offset);
+				if (i != stack->top)
+					write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
 			} else {
+				// The odd positions contain tokens or the LHS of a rule
 				if (val < stack_rule_offset) {
 					// Ids
 					write_buffer_string(&buffer, parser_tks[val], &buffer_size, &buffer_offset);
-					
 				} else {
 					// Tokens
 					write_buffer_string(&buffer, rules_lhs_sym[val - stack_rule_offset], &buffer_size, &buffer_offset);
-					
 				}
 			}
 		}

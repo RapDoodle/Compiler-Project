@@ -8,7 +8,7 @@ int get_char_index(char c)
     return -1;
 }
 
-int next_token(char** ptr, int* token_idx)
+int next_token(char** ptr)
 {
     int current_state = 0;
     int col = -1;
