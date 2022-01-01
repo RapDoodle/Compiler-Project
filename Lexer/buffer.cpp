@@ -1,37 +1,49 @@
 #include "buffer.h"
 
-char* create_buffer(int size) 
+char* create_buffer(int size)
 {
 	char* buffer = (char*)malloc(size * sizeof(int));
-	if (size > 0)
+	if (buffer != NULL && size > 0)
 		buffer[0] = '\0';
 	return buffer;
 }
 
-void increase_buffer(char** buffer, int* buffer_size)
+bool increase_buffer(char** buffer, int* buffer_size)
 {
-	*buffer = (char*)realloc(*buffer, *buffer_size * 2);
-	*buffer_size *= 2;
+	char* new_buffer = (char*)realloc(*buffer, *(buffer_size) * 2);
+	if (new_buffer != NULL) {
+		*buffer = new_buffer;
+		*buffer_size *= 2;
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
-void write_buffer_string(char **buffer, const char *str, int *buffer_size, int *offset)
+bool write_buffer_string(char** buffer, const char* str, int* buffer_size, int* offset)
 {
 	int str_length = strlen(str);
 
 	// Increase the buffer size on demand
-	if (*buffer_size < str_length + *offset)
-		increase_buffer(buffer, buffer_size);
+	if (*buffer_size < str_length + *offset) {
+		if (!increase_buffer(buffer, buffer_size))
+			return false;
+	}
 	sprintf(*buffer + *offset, "%s", str);
 	*offset += str_length;
+	return true;
 }
 
-void write_buffer_char(char** buffer, const char ch, int* buffer_size, int* offset)
+bool write_buffer_char(char** buffer, const char ch, int* buffer_size, int* offset)
 {
 	// Increase the buffer size on demand
 	if (*buffer_size < *offset + 1)
-		increase_buffer(buffer, buffer_size);
+		if (!increase_buffer(buffer, buffer_size))
+			return false;
 	sprintf(*buffer + *offset, "%c", ch);
 	*offset += 1;
+	return true;
 }
 
 void reset_buffer(char** buffer, int* buffer_size, int* offset)
