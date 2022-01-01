@@ -25,7 +25,6 @@ int next_token(char** ptr);
 	Get the next token
  argunment:
 	ptr: The address of the variable that stores the input string
-	to
  return:
-	true if the stack is initialized correctly
+	int: The index of the token
 */
