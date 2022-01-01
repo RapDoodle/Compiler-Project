@@ -18,7 +18,7 @@ int dfa2tkid(int dfa_state)
 	}
 }
 
-char* show_parser_stack(Stack* stack)
+char* get_parser_stack(Stack* stack)
 {
 	// Initialize a string buffer
 	char* buffer = create_buffer(64);
