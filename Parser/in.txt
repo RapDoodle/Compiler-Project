@@ -1,0 +1,6 @@
+sig_"name"=='David'"students"
+sig_'Goliath'
+xxxx
+("a")*"b"
+"name"
+sig_("name"=='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome"))))
