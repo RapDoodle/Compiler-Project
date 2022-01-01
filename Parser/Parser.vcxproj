@@ -149,8 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="dfa.h" />
     <ClInclude Include="lexer.h" />
     <ClInclude Include="parser.h" />
+    <ClInclude Include="slr1.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
