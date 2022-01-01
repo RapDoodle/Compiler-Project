@@ -36,8 +36,8 @@ char* lexer(char* str)
             break;
         } else {
             write_buffer_string(&buffer, lexemes[token_idx], &buffer_size, &buffer_offset);
-            for (int i = 0; i < num_show_tk_name; i++) {
-                if (token_idx == show_tk_name[i]) {
+            for (int i = 0; i < show_sym_name_len; i++) {
+                if (token_idx == show_sym_name[i]) {
                     write_buffer_char(&buffer, '<', &buffer_size, &buffer_offset);
 
                     // Read the token name in between

@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.h" />
+    <ClInclude Include="dfa.h" />
     <ClInclude Include="lexer.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
