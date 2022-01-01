@@ -1,4 +1,4 @@
-// Compiler Construction Group Project (Phase 1)
+// Compiler Construction Group Project (Phase 2)
 //
 // Authors: Group 1
 // Date: 11/08/2021
@@ -28,24 +28,28 @@ char* analyze(char* str)
     int buffer_size = 64, buffer_offset = 0;
     char* buffer = create_buffer(buffer_size);
 
+    // Display the initial buffer
     write_buffer_string(&buffer, "initial\n", &buffer_size, &buffer_offset);
     write_buffer_string(&buffer, "\t<0 ", &buffer_size, &buffer_offset);
     write_buffer_string(&buffer, str, &buffer_size, &buffer_offset);
     write_buffer_string(&buffer, " $>\n", &buffer_size, &buffer_offset);
 
+    // Intermediate variables
     int state = 0, actn_shft = -1, actn_rdc = -1, pop_len = 0, rule_id = -1, par_tkid = -1;
 
+    // Initialize the stack
     Stack stack;
     create_stack(&stack, 64);
     stack_push(&stack, 0);
 
-    // End of string
+    // End of string detection
     bool eos_signal = false, eos = false;
 
     do {
+        // Keep the address of the starting state, in case the need of a rollback
         prev_inp_ptr = inp_ptr;
         if (inp_ptr != NULL && *inp_ptr != '\0' && *inp_ptr != '\n') {
-            token_idx = next_token(&inp_ptr, &token_idx);
+            token_idx = next_token(&inp_ptr);
             if (token_idx < 0) {
                 // Override all data in the buffer with the error message
                 write_buffer_string(&buffer, "lexical error\n", &buffer_size, &buffer_offset);
@@ -55,16 +59,20 @@ char* analyze(char* str)
             // Convert to parser token id
             par_tkid = dfa2tkid(accepted_states[token_idx]);
         } else {
-            // Get the token id for $
+            // Get the token id for $. The EOS or newline character is equivalent to $
+            // At the end of the string, get the token id for $
             par_tkid = dfa2tkid(-1);
+
+            // Signal to terminate the loop
             eos_signal = true;
+
+            // Indicating the loop has reached the end of string
             eos = true;
         }
 
         // Check for accept
         // Check for whether to accept the string
         if (actn_acc_tbl[state][par_tkid]) {
-
             write_buffer_string(&buffer, "accept\n", &buffer_size, &buffer_offset);
             break;
         }
@@ -80,9 +88,6 @@ char* analyze(char* str)
             // Push the current character
             stack_push(&stack, par_tkid);
             stack_push(&stack, state);
-
-            eos_signal = false;
-            
         } else {
             // Check for reduce
             actn_rdc = actn_rdc_tbl[state][par_tkid];
@@ -107,26 +112,29 @@ char* analyze(char* str)
                 state = goto_tbl[state][rule_id];
                 stack_push(&stack, state);
 
+                // Indicating there could be more reduce moves
                 eos_signal = false;
 
                 write_buffer_string(&buffer, "reduce ", &buffer_size, &buffer_offset);
                 write_buffer_string(&buffer, rules[actn_rdc], &buffer_size, &buffer_offset);
                 write_buffer_char(&buffer, '\n', &buffer_size, &buffer_offset);
             } else {
+                // Neither a push nor a reduce, report syntax error
                 write_buffer_string(&buffer, "syntax error\n", &buffer_size, &buffer_offset);
                 break;
             }
 
         }
 
+        // Write the formatted output to the buffer
         char* output_str = get_parser_stack(&stack);
         write_buffer_string(&buffer, "\t<", &buffer_size, &buffer_offset);
         write_buffer_string(&buffer, output_str, &buffer_size, &buffer_offset);
-        if (eos_signal) {
-            write_buffer_string(&buffer, inp_ptr, &buffer_size, &buffer_offset);
+        if (inp_ptr != NULL && *inp_ptr != '\0' && *inp_ptr != '\n') {
             write_buffer_char(&buffer, ' ', &buffer_size, &buffer_offset);
+            write_buffer_string(&buffer, inp_ptr, &buffer_size, &buffer_offset);
         }
-        write_buffer_string(&buffer, "$>\n", &buffer_size, &buffer_offset);
+        write_buffer_string(&buffer, " $>\n", &buffer_size, &buffer_offset);
     } while (!eos_signal || stack.top > 1);
 
     return buffer;
@@ -135,7 +143,7 @@ char* analyze(char* str)
 
 int main()
 {
-    printf("Relational Algebra Analyzer (Version: 1.1)\nBuilt by Group 1\n\n");
+    printf("Relational Algebra Analyzer (Version: 1.2)\nBuilt by Group 1\n\n");
 
     Stack stack;
     create_stack(&stack, 64);
@@ -168,8 +176,7 @@ int main()
                 if (fout_ptr != NULL) {
                     fprintf(fout_ptr, "---------------\n");
                     fprintf(fout_ptr, "%s", out);
-                }
-                    
+                } 
 
                 // Print the '>>>' symbol if not the end of file
                 if ((pk_ch = fpeek(fin_ptr)) != EOF)
