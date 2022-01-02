@@ -1,0 +1,206 @@
+---------------
+initial
+	<0 sig_"name"=='David'"students" $>
+shift
+	<0 sig2 _"name"=='David'"students" $>
+shift
+	<0 sig2 _7 "name"=='David'"students" $>
+shift
+	<0 sig2 _7 id15 =='David'"students" $>
+reduce N->id
+	<0 sig2 _7 N14 =='David'"students" $>
+shift
+	<0 sig2 _7 N14 ==21 'David'"students" $>
+shift
+	<0 sig2 _7 N14 ==21 text16 "students" $>
+reduce N->text
+	<0 sig2 _7 N14 ==21 N24 "students" $>
+reduce R->N==N
+	<0 sig2 _7 R12 "students" $>
+reduce Q->R
+	<0 sig2 _7 Q11 "students" $>
+reduce P->Q
+	<0 sig2 _7 P10 "students" $>
+shift
+	<0 sig2 _7 P10 id4 $>
+reduce T->id
+	<0 sig2 _7 P10 T18 $>
+reduce E->sig_PT
+	<0 E1 $>
+accept
+---------------
+initial
+	<0 sig_'Goliath' $>
+shift
+	<0 sig2 _'Goliath' $>
+shift
+	<0 sig2 _7 'Goliath' $>
+shift
+	<0 sig2 _7 text16 $>
+syntax error
+---------------
+initial
+	<0 xxxx $>
+lexical error
+---------------
+initial
+	<0 sigsig $>
+shift
+	<0 sig2 sig $>
+syntax error
+---------------
+initial
+	<0 sigsi $>
+shift
+	<0 sig2 si $>
+lexical error
+---------------
+initial
+	<0 ("a")*"b" $>
+shift
+	<0 (5 "a")*"b" $>
+shift
+	<0 (5 id4 )*"b" $>
+reduce T->id
+	<0 (5 T3 )*"b" $>
+reduce E->T
+	<0 (5 E8 )*"b" $>
+shift
+	<0 (5 E8 )17 *"b" $>
+reduce T->(E)
+	<0 T3 *"b" $>
+reduce E->T
+	<0 E1 *"b" $>
+shift
+	<0 E1 *6 "b" $>
+shift
+	<0 E1 *6 id4 $>
+reduce T->id
+	<0 E1 *6 T9 $>
+reduce E->E*T
+	<0 E1 $>
+accept
+---------------
+initial
+	<0 "name" $>
+shift
+	<0 id4 $>
+reduce T->id
+	<0 T3 $>
+reduce E->T
+	<0 E1 $>
+accept
+---------------
+initial
+	<0 sig_("name"=='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _("name"=='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 ("name"=='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 "name"=='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 id15 =='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+reduce N->id
+	<0 sig2 _7 (13 N14 =='Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 N14 ==21 'Bob'or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 N14 ==21 text16 or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+reduce N->text
+	<0 sig2 _7 (13 N14 ==21 N24 or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+reduce R->N==N
+	<0 sig2 _7 (13 R12 or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+reduce Q->R
+	<0 sig2 _7 (13 Q11 or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+reduce P->Q
+	<0 sig2 _7 (13 P20 or("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 or19 ("name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 or19 (13 "name"=="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 or19 (13 id15 =="alias"))or"role"=='staff'(((("Welcome")))) $>
+reduce N->id
+	<0 sig2 _7 (13 P20 or19 (13 N14 =="alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 or19 (13 N14 ==21 "alias"))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 or19 (13 N14 ==21 id15 ))or"role"=='staff'(((("Welcome")))) $>
+reduce N->id
+	<0 sig2 _7 (13 P20 or19 (13 N14 ==21 N24 ))or"role"=='staff'(((("Welcome")))) $>
+reduce R->N==N
+	<0 sig2 _7 (13 P20 or19 (13 R12 ))or"role"=='staff'(((("Welcome")))) $>
+reduce Q->R
+	<0 sig2 _7 (13 P20 or19 (13 Q11 ))or"role"=='staff'(((("Welcome")))) $>
+reduce P->Q
+	<0 sig2 _7 (13 P20 or19 (13 P20 ))or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 or19 (13 P20 )23 )or"role"=='staff'(((("Welcome")))) $>
+reduce Q->(P)
+	<0 sig2 _7 (13 P20 or19 Q22 )or"role"=='staff'(((("Welcome")))) $>
+reduce P->PorQ
+	<0 sig2 _7 (13 P20 )or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 (13 P20 )23 or"role"=='staff'(((("Welcome")))) $>
+reduce Q->(P)
+	<0 sig2 _7 Q11 or"role"=='staff'(((("Welcome")))) $>
+reduce P->Q
+	<0 sig2 _7 P10 or"role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 or19 "role"=='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 or19 id15 =='staff'(((("Welcome")))) $>
+reduce N->id
+	<0 sig2 _7 P10 or19 N14 =='staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 or19 N14 ==21 'staff'(((("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 or19 N14 ==21 text16 (((("Welcome")))) $>
+reduce N->text
+	<0 sig2 _7 P10 or19 N14 ==21 N24 (((("Welcome")))) $>
+reduce R->N==N
+	<0 sig2 _7 P10 or19 R12 (((("Welcome")))) $>
+reduce Q->R
+	<0 sig2 _7 P10 or19 Q22 (((("Welcome")))) $>
+reduce P->PorQ
+	<0 sig2 _7 P10 (((("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 (5 ((("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 (5 (5 (("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 (5 (5 (5 ("Welcome")))) $>
+shift
+	<0 sig2 _7 P10 (5 (5 (5 (5 "Welcome")))) $>
+shift
+	<0 sig2 _7 P10 (5 (5 (5 (5 id4 )))) $>
+reduce T->id
+	<0 sig2 _7 P10 (5 (5 (5 (5 T3 )))) $>
+reduce E->T
+	<0 sig2 _7 P10 (5 (5 (5 (5 E8 )))) $>
+shift
+	<0 sig2 _7 P10 (5 (5 (5 (5 E8 )17 ))) $>
+reduce T->(E)
+	<0 sig2 _7 P10 (5 (5 (5 T3 ))) $>
+reduce E->T
+	<0 sig2 _7 P10 (5 (5 (5 E8 ))) $>
+shift
+	<0 sig2 _7 P10 (5 (5 (5 E8 )17 )) $>
+reduce T->(E)
+	<0 sig2 _7 P10 (5 (5 T3 )) $>
+reduce E->T
+	<0 sig2 _7 P10 (5 (5 E8 )) $>
+shift
+	<0 sig2 _7 P10 (5 (5 E8 )17 ) $>
+reduce T->(E)
+	<0 sig2 _7 P10 (5 T3 ) $>
+reduce E->T
+	<0 sig2 _7 P10 (5 E8 ) $>
+shift
+	<0 sig2 _7 P10 (5 E8 )17 $>
+reduce T->(E)
+	<0 sig2 _7 P10 T18 $>
+reduce E->sig_PT
+	<0 E1 $>
+accept
